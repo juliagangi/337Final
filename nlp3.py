@@ -85,7 +85,7 @@ def ingredient_info(ingredients):
             quant = split_str[0:2]
             i = 2
         except:
-            if split_str[1] == 'or' or split_str[1] == 'and':
+            if split_str[1] == 'or' or split_str[1] == 'and' or split_str[1] == 'to':
                 quant = split_str[0:3]
                 i = 3
             if split_str[1].__contains__('/'):
@@ -122,6 +122,8 @@ def ingredient_info(ingredients):
                 else:
                     ingredient = ingredient + ' ' + split_str[i][0:len(split_str[i])-1]
                 i = i + 1
+                if nlp(split_str[i])[0].pos_ != 'VERB':
+                    continue
                 looking_for_end = True
             elif nlp(split_str[i])[0].tag_ == 'VBN' or nlp(split_str[i])[0].tag_ == 'VBD':
                 if prep == '':
@@ -157,12 +159,13 @@ def plural(ingredient):
 def scaling_questions(factor):
     units = ['cup', 'cups', 'ml', 'mls', 'liters', 'L', 'ounces', 'oz', 'lb', 'lbs', 'pounds', 'pound', 'teaspoon', 'teaspoons', 'tsp', 'tablespoon', 'tablespoons', 'tbsp']    
     ingredient_dict = ingredient_info(ingredients)
-    new_dict = copy.deepcopy(ingredient_dict)
+    print(ingredient_dict)
+    #new_dict = copy.deepcopy(ingredient_dict)
     response = []
-    for ingredient in new_dict:
+    for ingredient in ingredient_dict:
         lst = ingredient_dict[ingredient]
         quantity = multiply(lst[0],factor)
-        new_dict[ingredient][0] = quantity
+        ingredient_dict[ingredient][0] = quantity
         unit = lst[1]
         prep = lst[2]
         t1 = ' '
@@ -203,7 +206,6 @@ def scaling_questions(factor):
 
 
 def multiply(num,factor):
-    print(num)
     if num.__contains__('-'):
         midindex = num.index('-')
         num1 = factor*float(num[0:midindex])
@@ -213,10 +215,10 @@ def multiply(num,factor):
         if str(num2)[len(str(num2))-2:len(str(num2))] == '.0':
             num2 = str(num2)[0:len(str(num2))-2]
         return num1+'-'+num2
-    if num.__contains__('or') or num.__contains__('and'):
+    if num.__contains__('or') or num.__contains__('and') or num.__contains__('to'):
         for i in range(len(num)):
             digit = num[i]
-            if digit != 'or':
+            if digit != 'or' and digit != 'and' and digit != 'to':
                 try:
                     converted = int(digit)
                     mult = converted*factor
@@ -243,8 +245,9 @@ def multiply(num,factor):
                             num[i] = digit
         num1 = num[0]
         num2 = num[2]
-        if str(int(num1)) == num1 and str(int(num2)) == num2:
-            return str(int(num1)+int(num2))
+        if num.__contains__('and'):
+            if str(int(num1)) == num1 and str(int(num2)) == num2:
+                return str(int(num1)+int(num2))
         return ' '.join(num)
     num = num.split()
     sum = 0
