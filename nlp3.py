@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import spacy
 import numerizer
 from fractions import Fraction
+import copy
 from recipe_scrapers import scrape_me
 nlp = spacy.load("en_core_web_sm")
   
@@ -84,7 +85,7 @@ def ingredient_info(ingredients):
             quant = split_str[0:2]
             i = 2
         except:
-            if split_str[1] == 'or':
+            if split_str[1] == 'or' or split_str[1] == 'and':
                 quant = split_str[0:3]
                 i = 3
             if split_str[1].__contains__('/'):
@@ -154,11 +155,14 @@ def plural(ingredient):
 
 
 def scaling_questions(factor):
+    units = ['cup', 'cups', 'ml', 'mls', 'liters', 'L', 'ounces', 'oz', 'lb', 'lbs', 'pounds', 'pound', 'teaspoon', 'teaspoons', 'tsp', 'tablespoon', 'tablespoons', 'tbsp']    
     ingredient_dict = ingredient_info(ingredients)
+    new_dict = copy.deepcopy(ingredient_dict)
     response = []
-    for ingredient in ingredient_dict:
+    for ingredient in new_dict:
         lst = ingredient_dict[ingredient]
         quantity = multiply(lst[0],factor)
+        new_dict[ingredient][0] = quantity
         unit = lst[1]
         prep = lst[2]
         t1 = ' '
@@ -178,9 +182,28 @@ def scaling_questions(factor):
     print("Here is the updated ingredients list: ")
     for a_response in response:
         print(a_response)
+    print("Here are the updated directions: ")
+    i = 0
+    for step in steps:
+        step = step.split()
+        newstep = copy.deepcopy(step) 
+        for unit in units:
+            if step.__contains__(unit):
+                index = step.index(unit) - 1
+                num = step[index]
+                if nlp(unit)[0].tag_ == 'NN' or unit[len(unit)-1] != 's':
+                    newstep[index+1] = unit + 's'
+                try:
+                    f = float(num)
+                    newstep[index] = multiply(num,factor)
+                except:
+                    continue
+        i = i + 1
+        print('step ' + str(i) + ': ' + ' '.join(newstep))
 
 
 def multiply(num,factor):
+    print(num)
     if num.__contains__('-'):
         midindex = num.index('-')
         num1 = factor*float(num[0:midindex])
@@ -190,8 +213,7 @@ def multiply(num,factor):
         if str(num2)[len(str(num2))-2:len(str(num2))] == '.0':
             num2 = str(num2)[0:len(str(num2))-2]
         return num1+'-'+num2
-    num = num.split()
-    if num.__contains__('or'):
+    if num.__contains__('or') or num.__contains__('and'):
         for i in range(len(num)):
             digit = num[i]
             if digit != 'or':
@@ -219,7 +241,12 @@ def multiply(num,factor):
                                 num[i] = str(quotient)                            
                         else:
                             num[i] = digit
+        num1 = num[0]
+        num2 = num[2]
+        if str(int(num1)) == num1 and str(int(num2)) == num2:
+            return str(int(num1)+int(num2))
         return ' '.join(num)
+    num = num.split()
     sum = 0
     for digit in num:
         try:
@@ -319,7 +346,8 @@ def cooking_action(question,curdir):
     print(answer)
     return
 
-print("My name is KitchenBot and I am here to help you understand the recipe you would like to make. \nAt any point, you may enter 'ingredients' to view the ingredients list or 'directions' to navigate the recipe's directions.")
+print("My name is KitchenBot and I am here to help you modify the recipe you would like to make.")
+print("I am equipped to handle scaling, substitutions, cuisine transformations, and dietary accomodations.")
 url = input("Please enter the URL of a recipe: ")
 
 scraper = scrape_me(url)
@@ -336,7 +364,7 @@ while counter < len(steps):
 
 
 print("I see that you would like to make " + title[0:len(title)] + '.')
-print("Right now, would you like to go through the ingredients or the directions?")
+print("What would you like to change about the recipe?")
 
 ansArr = ['Nothing','Step','Ingredient']
 stepI = 0
