@@ -169,7 +169,7 @@ def print_directions():
 
 def ingredient_info(ingredients):
     ingredient_dict = {}
-    units = ['cup', 'cups', 'ml', 'mls', 'liters', 'L', 'ounces', 'oz', 'lb', 'lbs', 'pounds', 'pound', 'teaspoon', 'teaspoons', 'tsp', 'tablespoon', 'tablespoons', 'tbsp']    
+    units = ['cup', 'cups', 'ml', 'mls', 'liters', 'L', 'ounces', 'oz', 'lb', 'lbs', 'stick', 'sticks', 'pounds', 'pound', 'teaspoon', 'teaspoons', 'tsp', 'tablespoon', 'tablespoons', 'tbsp']    
     for ingredient in ingredients:
         split_str = ingredient.lower().split()
         quant = split_str[0]
@@ -249,7 +249,7 @@ def plural(ingredient):
 
 
 def scaling_questions(factor):
-    units = ['cup', 'cups', 'ml', 'mls', 'liters', 'L', 'ounces', 'oz', 'lb', 'lbs', 'pounds', 'pound', 'teaspoon', 'teaspoons', 'tsp', 'tablespoon', 'tablespoons', 'tbsp']    
+    units = ['cup', 'cups', 'ml', 'mls', 'liters', 'L', 'ounces', 'oz', 'lb', 'lbs', 'stick', 'pounds', 'pound', 'teaspoon', 'teaspoons', 'tsp', 'tablespoon', 'tablespoons', 'tbsp']    
     ingredient_dict = ingredient_info(ingredients)
     new_dict = copy.deepcopy(ingredient_dict)
     response = []
@@ -264,11 +264,13 @@ def scaling_questions(factor):
         t3 = ', '
         if unit == '':
             t1 = ''
-            if quantity != '1' and nlp(ingredient[len(ingredient)-1])[0].tag_ == 'NN':#ingredient[len(ingredient)-1] != 's':
+            if quantity != '1' and (nlp(ingredient[len(ingredient)-1])[0].tag_ == 'NN' or ingredient[len(ingredient)-1] != 's'):
                 ingredient = ingredient + 's'
         else:
-            if quantity != '1' and nlp(unit)[0].tag_ == 'NN':#unit[len(unit)-1] != 's':
+            if quantity != '1' and (nlp(unit)[0].tag_ == 'NN' or unit[len(unit)-1] != 's'):
                 unit = unit + 's'
+            elif quantity == '1' and (nlp(unit)[0].tag_ == 'NNS' or unit[len(unit)-1] == 's'):
+                unit = unit[0:len(unit)-1]
         if prep == '':
             t3 = ''
         curr_response = quantity + t1 + unit + t2 + ingredient + t3 + prep
@@ -285,8 +287,10 @@ def scaling_questions(factor):
             if step.__contains__(unit):
                 index = step.index(unit) - 1
                 num = step[index]
-                if nlp(unit)[0].tag_ == 'NN' or unit[len(unit)-1] != 's':
+                if nlp(unit)[0].tag_ == 'NN' or unit[len(unit)-1] != 's' and num > 1:
                     newstep[index+1] = unit + 's'
+                if nlp(unit)[0].tag_ == 'NNS' or unit[len(unit)-1] == 's' and num == 1:
+                    newstep[index+1] = unit[0:len(unit)-1]          
                 try:
                     f = float(num)
                     newstep[index] = multiply(num,factor)
@@ -297,7 +301,6 @@ def scaling_questions(factor):
 
 
 def multiply(num,factor):
-    print(num)
     if num.__contains__('-'):
         midindex = num.index('-')
         num1 = factor*float(num[0:midindex])
@@ -587,6 +590,9 @@ while(True):
 
     if inpt.lower().__contains__("double"):
         scaling_questions(2)
+
+    elif inpt.lower().__contains__("half") or inpt.lower().__contains__("halv"):
+        scaling_questions(.5)
     
     elif inpt.lower().__contains__("triple"):
         scaling_questions(3)
