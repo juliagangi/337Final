@@ -7,7 +7,7 @@ from fractions import Fraction
 import copy
 from recipe_scrapers import scrape_me
 nlp = spacy.load("en_core_web_sm")
-  
+from collections import defaultdict 
 # link for extract html data 
 def getdata(url): 
     r = requests.get(url) 
@@ -165,7 +165,18 @@ def print_directions():
         print(stepcounter)
         print(step)
         counter+=1
+def direction_methods(steps):
+    method_dict = defaultdict(list)
 
+    for i in range(len(steps)):
+        step = steps[i]
+        wordArr = step.lower().split()
+        for word in wordArr:
+            #print( nlp(word)[0].tag_)
+            if nlp(word)[0].tag_ == 'VB' and word !='sauce' and word != 'oven':
+                method_dict[i+1].append(word)
+
+    return method_dict
 
 def ingredient_info(ingredients):
     ingredient_dict = {}
