@@ -6,8 +6,9 @@ import numerizer
 from fractions import Fraction
 import copy
 from recipe_scrapers import scrape_me
-nlp = spacy.load("en_core_web_sm")
 from collections import defaultdict 
+nlp = spacy.load("en_core_web_sm")
+  
 # link for extract html data 
 def getdata(url): 
     r = requests.get(url) 
@@ -165,9 +166,9 @@ def print_directions():
         print(stepcounter)
         print(step)
         counter+=1
+
 def direction_methods(steps):
     method_dict = defaultdict(list)
-
     for i in range(len(steps)):
         step = steps[i]
         wordArr = step.lower().split()
@@ -175,7 +176,6 @@ def direction_methods(steps):
             #print( nlp(word)[0].tag_)
             if nlp(word)[0].tag_ == 'VB' and word !='sauce' and word != 'oven':
                 method_dict[i+1].append(word)
-
     return method_dict
 
 def ingredient_info(ingredients):
@@ -383,7 +383,57 @@ def multiply(num,factor):
         if len(str(sum)) > 2 and str(sum)[len(str(sum))-2:len(str(sum))] == '.0':
             return str(sum)[0:len(str(sum))-2]
         return str(sum)
-
+    
+#action_dict = {1:['preheat'],2:['place'],3:['rub','bake'],4:['slice'],5:['place','add'],6:['remove'],7:['lower'],8:['cut'],9:['scrape'],10:[],11:['lay'],12:['smash'],13:['add','mix'],14:['add'],15:['fill'],16:['fill'],17:['top','pop'],18:[]}
+def method_transformations():
+    method_arr = [['mix','whisk','beat'],['smash','mash','cut'],['rub','pat','marinate'],['bake','roast','air fry','saute','steam','sear','sauté','saute','fry','grill','barbecue','broil','toast'],['chop','slice','dice','julienne','cut','cube','mince','cleave'],['boil','steam']]
+    counter = 1
+    # make dict where keys are steps, values are dict mapping old verb to new verbs to reprint steps 
+    for step in steps:
+        stepcounter = "Step "
+        stepcounter+=str(counter)
+        stepcounter+=":"
+        print(stepcounter, step)
+        in_step = method_dict[counter] 
+        stri = "Here are the replaceable actions used in this step: "
+        ctr = 0
+        replaceable = []
+        for action in in_step:
+            for arr in method_arr:
+                if action.lower() in arr:
+                    stri = stri + action + ', '
+                    replaceable.append(action.lower())
+                    ctr+=1
+                    break
+        if ctr == 0:
+            print("There are no replaceable actions in this step.")
+            counter+=1
+            input("Press Enter to move to the next step\n")
+            continue            
+        print(stri[0:len(stri)-2])
+        for action in replaceable:
+            choice = input("\nWould you like to replace "+"'"+action+"'? Enter 'yes' or 'no': ")
+            if choice.lower() == 'yes':
+                found = False
+                for array in method_arr:
+                    if action in array:
+                        stri = "Here are your replacement options for "+"'"+action+"'"+": "
+                        for method in array:
+                            if method != action:
+                                stri = stri + method + ', '
+                        print(stri[0:len(stri)-2])
+                        new = input("Which option do you prefer? ")
+                        index = in_step.index(action)
+                        method_dict[counter][index] = new
+                        found = True
+                        break
+                if not found:
+                    print("I can't find any replacements for that action.")
+            continue
+        counter+=1
+        input("Press Enter to move to the next step\n")
+    #print("Here are the new steps:")
+    return        
 
 def cooking_action(question,curdir):
     tagged = nlp(question)
@@ -455,7 +505,7 @@ def cooking_action(question,curdir):
     return
 
 print("My name is KitchenBot and I am here to help you modify the recipe you would like to make.")
-print("I am equipped to handle scaling, substitutions, cuisine transformations, and dietary accomodations.")
+print("I am equipped to handle scaling, substitutions, cuisine transformations, method transformations, and dietary accomodations.")
 url = input("Please enter the URL of a recipe: ")
 
 scraper = scrape_me(url)
@@ -470,6 +520,7 @@ while counter < len(steps):
     steps[counter] = step
     counter+=1 
 
+method_dict = direction_methods(steps)
 
 print("I see that you would like to make " + title[0:len(title)] + '.')
 print("What would you like to change about the recipe?")
@@ -573,6 +624,7 @@ while(True):
                         newsteps.append(dir)
                         break
             steps = newsteps
+
     if "ingredient" in inpt.lower():
         print_ingredients()
 
@@ -599,15 +651,15 @@ while(True):
         else:
             print("There are no steps before this!")
 
-    if inpt.lower().__contains__("double"):
+    elif inpt.lower().__contains__("double"):
         scaling_questions(2)
 
     elif inpt.lower().__contains__("half") or inpt.lower().__contains__("halv"):
         scaling_questions(.5)
-    
-    elif inpt.lower().__contains__("triple"):
-        scaling_questions(3)
-    
+
+    elif inpt.lower().__contains__("method"):
+        method_transformations()
+
     if "vegetarian" in inpt.lower() and "non" not in inpt.lower():
         healthyflag = False
         the_meat = contains_meat()
