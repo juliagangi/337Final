@@ -526,7 +526,7 @@ ingredients = scraper.ingredients()
 steps = scraper.instructions()
 steps = steps.split('.')
 counter = 0
-while counter < len(steps):
+while counter < len(steps) - 1:
     step = steps[counter]
     step = step.strip()
     steps[counter] = step
