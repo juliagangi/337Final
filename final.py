@@ -115,16 +115,52 @@ def contains_vegoptions():
 un_to_healthy = {}
 un_to_healthy["sugar"] = ["agave", "honey", "applesauce", "stevia"]
 un_to_healthy["butter"] = ["low-fat butter", "ghee"]
-un_to_healthy["oil"] = ["low-fat butter", "applesauce", "ghee"]
+un_to_healthy["olive oil"] = ["low-fat butter", "applesauce", "ghee"]
+un_to_healthy["vegetable oil"] = ["low-fat butter", "applesauce", "ghee"]
+un_to_healthy["canola oil"] = ["low-fat butter", "applesauce", "ghee"]
+un_to_healthy["coconut oil"] = ["low-fat butter", "applesauce", "ghee"]
+un_to_healthy["peanut oil"] = ["low-fat butter", "applesauce", "ghee"]
+un_to_healthy["sesame oil"] = ["low-fat butter", "applesauce", "ghee"]
+un_to_healthy["avocado oil"] = ["low-fat butter", "applesauce", "ghee"]
 un_to_healthy["bacon"] = ["turkey bacon", "veggie bacon"]
 un_to_healthy["pasta"] = ["whole-wheat pasta", "zucchini noodles"]
 un_to_healthy["spaghetti"] = ["whole-wheat spaghetti", "zucchini noodles"]
 un_to_healthy["rice"] = ["brown rice", "riced vegetables"]
 un_to_healthy["ground beef"] = ["ground turkey"]
-un_to_healthy["beef"] = ["chicken", "turkey", "beans", "chickpeas", "lentils"]
-un_to_healthy["steak"] = ["chicken", "turkey"]
+un_to_healthy["beef"] = ["chicken", "turkey", "beans", "chickpeas", "lentils", "salmon", "fish"]
+un_to_healthy["steak"] = ["chicken", "turkey", "beans","chickpeas", "lentils", "fish", "salmon"]
 un_to_healthy["burger"] = ["turkey burger", "veggie burger", "bean burger"]
+healthyoptions = []
+for index in un_to_healthy:
+    thelist = un_to_healthy[index]
+    for word in thelist:
+        if word not in healthyoptions:
+            healthyoptions.append(word)
 
+healthy_to_un = {}
+healthy_to_un["agave"] = ["sugar"]
+healthy_to_un["honey"] = ["sugar"]
+healthy_to_un["applesauce"] = ["sugar"]
+healthy_to_un["stevia"] = ["sugar"]
+healthy_to_un["low-fat butter"] = ["butter", "olive oil", "vegetable oil", "canola oil", "coconut oil", "peanut oil", "sesame oil", "avocado oil"]
+healthy_to_un["applesauce"] = ["butter", "olive oil", "vegetable oil", "canola oil", "coconut oil", "peanut oil", "sesame oil", "avocado oil"]
+healthy_to_un["ghee"] = ["butter", "olive oil", "vegetable oil", "canola oil", "coconut oil", "peanut oil", "sesame oil", "avocado oil"]
+healthy_to_un["turkey bacon"] = ["bacon"]
+healthy_to_un["veggie bacon"] = ["bacon"]
+healthy_to_un["whole-wheat pasta"] = ["pasta"]
+healthy_to_un["whole-wheat spaghetti"] = ["spagetti"]
+healthy_to_un["zucchini noodles"] = ["pasta"]
+healthy_to_un["brown rice"] = ["rice"]
+healthy_to_un["ground turkey"] = ["ground beef"]
+healthy_to_un["chicken"] = ["beef", "steak"]
+healthy_to_un["turkey"] = ["beef", "steak"]
+healthy_to_un["beans"] = ["beef", "steak"]
+healthy_to_un["chickpeas"] = ["beef", "steak"]
+healthy_to_un["lentils"] = ["beef", "steak"]
+healthy_to_un["salmon"] = ["beef", "steak"]
+healthy_to_un["turkey burger"] = ["burger"]
+healthy_to_un["veggie burger"] = ["burger"]
+healthy_to_un["bean burger"] = ["burger"]
 
 def healthy():
     unhealthy_items = []
@@ -134,8 +170,20 @@ def healthy():
             unhealthy_items.append("sugar")
         if ingredient.__contains__("butter") and "butter" not in unhealthy_items:
             unhealthy_items.append("butter")
-        if ingredient.__contains__("oil") and "oil" not in unhealthy_items:
-            unhealthy_items.append("oil")
+        if ingredient.__contains__("olive oil") and "olive oil" not in unhealthy_items:
+            unhealthy_items.append("olive oil")
+        if ingredient.__contains__("canola oil") and "canola oil" not in unhealthy_items:
+            unhealthy_items.append("canola oil")
+        if ingredient.__contains__("coconut oil") and "coconut oil" not in unhealthy_items:
+            unhealthy_items.append("coconut oil")
+        if ingredient.__contains__("avocado oil") and "avocado oil" not in unhealthy_items:
+            unhealthy_items.append("avocado oil")
+        if ingredient.__contains__("vegetable oil") and "vegetable oil" not in unhealthy_items:
+            unhealthy_items.append("vegetable oil")
+        if ingredient.__contains__("peanut oil") and "peanut oil" not in unhealthy_items:
+            unhealthy_items.append("peanut oil")
+        if ingredient.__contains__("sesame oil") and "sesame oil" not in unhealthy_items:
+            unhealthy_items.append("sesame oil")
         if ingredient.__contains__("bacon") and "bacon" not in unhealthy_items:
             unhealthy_items.append("bacon")
         if ingredient.__contains__("pasta") and "pasta" not in unhealthy_items:
@@ -153,9 +201,18 @@ def healthy():
         if ingredient.__contains__("steak") and "steak" not in unhealthy_items:
             unhealthy_items.append("steak")
     return unhealthy_items
+
+def unhealthy():
+    healthy_items = []
+    for food in healthyoptions:
+        for ingredient in ingredients:
+            if ingredient.__contains__(food):
+                healthy_items.append(food)
+    return healthy_items
+
+
+
         
-
-
 def print_directions():
     print("Directions:")
     counter=1
@@ -166,9 +223,9 @@ def print_directions():
         print(stepcounter)
         print(step)
         counter+=1
-
 def direction_methods(steps):
     method_dict = defaultdict(list)
+
     for i in range(len(steps)):
         step = steps[i]
         wordArr = step.lower().split()
@@ -176,6 +233,7 @@ def direction_methods(steps):
             #print( nlp(word)[0].tag_)
             if nlp(word)[0].tag_ == 'VB' and word !='sauce' and word != 'oven':
                 method_dict[i+1].append(word)
+
     return method_dict
 
 def ingredient_info(ingredients):
@@ -542,6 +600,7 @@ ansArr = ['Nothing','Step','Ingredient']
 stepI = 0
 curr_ingr = ''
 healthyflag = False
+unhealthyflag = False
 while(True):
 
     preAns = ansArr[0]
@@ -559,57 +618,7 @@ while(True):
             if int(v[0]) < len(steps) and "step" in inpt.lower():
                 print("step " + v[0] + ": " + steps[int(v[0]) - 1])
                 stepI = int(v[0]) - 1
-    if "tofu" in inpt.lower() or "lentils" in inpt.lower() or "chickpeas" in inpt.lower() or "beans" in inpt.lower() or "eggplant" in inpt.lower():
-        vegflag = False
-        print("Keep in mind that replacing meat with a vegetarian substitute may change the duration you want to cook for. Not all directions will be applicable.")
-        replacement = inpt.lower()
-        the_meat = contains_meat()
-        newingredients = []
-        for ingr in ingredients:
-            flag = False
-            for item in the_meat:
-                if ingr.__contains__(item) and ingr.__contains__("flavored"):
-                    string = item
-                    string+= " flavored"
-                    ingr = ingr.replace(string, "regular")
-                    newingredients.append(ingr)
-                    flag = True
-                elif ingr.__contains__(item):
-                    ingr = ingr.replace(item, replacement)
-                    newingredients.append(ingr)
-                    flag = True
-            if flag==False:
-                newingredients.append(ingr)
-        ingredients = newingredients
-        newsteps = []
-        for dir in steps:
-            for item in the_meat:
-                if dir.__contains__(item):
-                    dir = dir.replace(item, replacement)
-                    newsteps.append(dir)
-                    break
-                else:
-                    newsteps.append(dir)
-                    break
-        steps = newsteps
-    if "healthy" in inpt.lower() and "un" not in inpt.lower():
-        healthyflag = True
-        bad_foods = healthy()
-        replacements = len(bad_foods)
-        if len(bad_foods) == 0:
-            print("This recipe is already very healthy.")
-        else:
-            for food in bad_foods:
-                good_foods = un_to_healthy[food]
-                health_str = ""
-                for gfood in good_foods:
-                    health_str+=gfood
-                    health_str+=","
-                    health_str+=" "
-                health_str = health_str[:-2]
-                print("You may replace", food, "with one of the following healthy options:", health_str)
-            print("Input the", replacements, "healthy ingredients you want to substitute for the", replacements, "unhealthy ingredients")
-    if healthyflag == False:
+    if healthyflag == False and unhealthyflag==False:
         if "chicken" in inpt.lower() or "ground beef" in inpt.lower() or "pork" in inpt.lower() or "steak" in inpt.lower() or "turkey" in inpt.lower() or "duck" in inpt.lower() or "fish" in inpt.lower():
             vegflag = False
             print("Keep in mind that replacing ingredients with a meat substitute can change the duration you want to cook for. Not all directions will be applicable, and it is unsafe to consume undercooked meat products.")
@@ -637,129 +646,483 @@ while(True):
                         newsteps.append(dir)
                         break
             steps = newsteps
-
-    if "ingredient" in inpt.lower():
-        print_ingredients()
-
-    if "directions" in inpt.lower():
-        print("These are the directions. Type 'next' or 'back' or simply type a number to navigate the steps!")
-        print("step 1:", steps[0])
-
-    if "repeat" in inpt.lower():
-        print("step", str(stepI) + ":", steps[stepI])
-
-    if "next" in inpt.lower():
-        if stepI < len(steps) - 2:
-            stepI += 1
-            curr_ingr = ''
-            print("step", str(stepI + 1) + ":", steps[stepI])
-        else:
-            print("There are no more steps!")
-
-    if "back" in inpt.lower() or "prev" in inpt.lower():
-        if stepI >= 1:
-            stepI -= 1
-            curr_ingr = ''
-            print("step", str(stepI + 1) + ":", steps[stepI])
-        else:
-            print("There are no steps before this!")
-
-    elif inpt.lower().__contains__("double"):
-        scaling_questions(2)
-
-    elif inpt.lower().__contains__("half") or inpt.lower().__contains__("halv"):
-        scaling_questions(.5)
-
-    elif inpt.lower().__contains__("method"):
-        method_transformations()
-
-    if "vegetarian" in inpt.lower() and "non" not in inpt.lower():
-        healthyflag = False
-        the_meat = contains_meat()
-        if len(the_meat)==0:
-            print("This recipe is already vegetarian")
-        else:
+            print("These are the new, non-vegetarian ingredients:")
+            for ing in ingredients:
+                print(ing)
+            print("These are the new steps:")
+            for dir in steps:
+                print(dir)
+        elif "tofu" in inpt.lower() or "lentils" in inpt.lower() or "chickpeas" in inpt.lower() or "beans" in inpt.lower() or "eggplant" in inpt.lower():
+            vegflag = False
+            print("Keep in mind that replacing meat with a vegetarian substitute may change the duration you want to cook for. Not all directions will be applicable.")
+            replacement = inpt.lower()
+            the_meat = contains_meat()
+            newingredients = []
             for ingr in ingredients:
-                if ingr.__contains__("burger") or ingr.__contains__("patty"):
-                    print("You may replace the meat patty with a bean burger, soy burger, impossible burger, mushroom burger, or veggie burger")
-                    break
-                elif ingr.__contains__("flavored"):
-                    print("You may choose to omit the", ingr, "entirely, or you may choose to use a vegetarian substitute.")
-                    for item in the_meat:
-                        if ingr.__contains__(item):
-                            oldingr = ingr
-                            ingr = ingr.replace(item, "regular")
-                            print("In this case, you would replace the", oldingr, "with", ingr)
-                            the_meat.remove(item)
-            for item in the_meat:
-                if item != "burger":
-                    print("You can choose to omit the", item, "entirely, or you may replace it with one of the following vegetarian substitutes:")
-                    print("tofu, lentils, beans, chickpeas, or eggplant")
-            vegflag = True
-            print("What would you like to substitute for the meat?")
-    elif "vegetarian" in inpt.lower() and "non" in inpt.lower():
-        healthyflag = False
-        the_meat = contains_meat()
-        if len(the_meat)>0:
-            print("This recipe is already contains meat")
-        else:
-            flag = False
-            for ingr in ingredients:
-                if ingr.__contains__("burger") or ingr.__contains__("patty"):
-                    print("You may replace the vegetarian patty with a beef patty or turkey patty")
-                    flag = True
-                    break
-                if ingr.__contains__("tofu"):
-                    flag = True
-                    print("You may replace the tofu with one of the following meat options:")
-                if ingr.__contains__("beans"):
-                    flag = True
-                    print("You may replace the beans with one of the following meat options:")
-                if ingr.__contains__("chickpeas"):
-                    flag = True
-                    print("You may replace the chickpeas with one of the following meat options:")
-                if ingr.__contains__("eggplant"):
-                    flag = True
-                    print("You may replace the eggplant with one of the following meat options:")
-                if ingr.__contains__("lentils"):
-                    flag = True
-                    print("You may replace the lentils with one of the following meat options:")
-            if flag==False:
-                print("You may add one of the following meat options:")
-                print("chicken, ground beef, steak, turkey, duck, pork, or fish")
+                flag = False
+                for item in the_meat:
+                    if ingr.__contains__(item) and ingr.__contains__("flavored"):
+                        string = item
+                        string+= " flavored"
+                        ingr = ingr.replace(string, "regular")
+                        newingredients.append(ingr)
+                        flag = True
+                    elif ingr.__contains__(item):
+                        ingr = ingr.replace(item, replacement)
+                        newingredients.append(ingr)
+                        flag = True
+                if flag==False:
+                    newingredients.append(ingr)
+            ingredients = newingredients
+            newsteps = []
+            for dir in steps:
+                for item in the_meat:
+                    if dir.__contains__(item):
+                        dir = dir.replace(item, replacement)
+                        newsteps.append(dir)
+                        break
+                    else:
+                        newsteps.append(dir)
+                        break
+            steps = newsteps
+            print("These are the new, vegetarian ingredients:")
+            for ing in ingredients:
+                print(ing)
+            print("These are the new steps:")
+            for dir in steps:
+                print(dir)
+        elif "healthy" in inpt.lower() and "un" not in inpt.lower():
+            healthyflag = True
+            bad_foods = healthy()
+            replacements = len(bad_foods)
+            if len(bad_foods) == 0:
+                print("This recipe is already very healthy.")
             else:
-                print("chicken, ground beef, steak, turkey, duck, pork, or fish")
-                print("What meat option you like to substitute in?")
-
-
-    if "substitute" in inpt.lower() or "replace" in inpt.lower() or "substitution" in inpt.lower() or "replacement" in inpt.lower():
-        newinpt = inpt.lower()
-        newinpt = newinpt.split()
-        theingredient = ""
-        flag = False
-        if newinpt.__contains__("cheese"):
-            print(replacementdict["cheese"])
-        elif newinpt.__contains__("oil"):
-            print(replacementdict["oil"])
-        elif newinpt.__contains__("turkey") or newinpt.__contains__("chicken") or newinpt.__contains__("beef") or newinpt.__contains__("pork"):
-            print(replacementdict["vegetarian"])
-        else:
-            for word in newinpt:
-                if flag==True:
-                    theingredient+=word
-                    theingredient+=" "
-                if newinpt.__contains__("for"):
-                    if word=="for":
-                        flag = True
-                else:
-                    if word == "replace" or word=="substitute":
-                        flag = True
-            
-            theingredient = theingredient[:-1]
+                for food in bad_foods:
+                    good_foods = un_to_healthy[food]
+                    health_str = ""
+                    for gfood in good_foods:
+                        health_str+=gfood
+                        health_str+=","
+                        health_str+=" "
+                    health_str = health_str[:-2]
+                    print("You may replace", food, "with one of the following healthy options:", health_str)
+                print("Input the", replacements, "healthy ingredients you want to substitute for the", replacements, "unhealthy ingredients")
+        elif "healthy" in inpt.lower() and "un" in inpt.lower():
+            unhealthstr = ""
+            unhealthyflag = True
+            good_foods = unhealthy()
+            replacements = {}
+            for food in good_foods:
+                unhealthstr = ""
+                replacements = healthy_to_un[food]
+                for rep in replacements:
+                    unhealthstr+=rep
+                    unhealthstr+=", "
+                print("You may replace", food, "with one of the following unhealthy options:", unhealthstr)
+            print("You may also add extra oil, butter, or sugar to this recipe, or pan-fry ingredients to make it less healthy")
+            print("Input the ingredients you would like to add to this recipe to make it less healthy.")
+        elif "greek" in inpt.lower():
+            units = ['cup', 'cups', 'ml', 'mls', 'liters', 'L', 'ounces', 'oz', 'lb', 'lbs', 'stick', 'sticks', 'pounds', 'pound', 'teaspoon', 'teaspoons', 'tsp', 'tablespoon', 'tablespoons', 'tbsp']
+            notgreekherbs = ["dill", "cilantro", "jalapeno", "basil", "cumin"]
+            counter=0
+            new = []
+            for ingr in ingredients:
+                flag = False
+                newingr = ""
+                for herb in notgreekherbs:
+                    if herb in ingr.lower():
+                        if counter==0:
+                            counter+=1
+                            newingr = "chopped thyme, to taste"
+                            flag = True
+                            new.append(newingr)
+                        elif counter==1:
+                            counter+=1
+                            newingr = "chopped mint, to taste"
+                            flag = True
+                            new.append(newingr)
+                        elif counter==2:
+                            counter+=1
+                            flag = True
+                            newingr = "chopped oregano, to taste"
+                            new.append(newingr)
+                if "cheese" in ingr.lower():
+                    ingr = ingr.split()
+                    for word in ingr:
+                        if word in units:
+                            newingr+=word
+                            newingr+=" "
+                            break
+                        else:
+                            newingr+=word
+                            newingr+=" "
+                    newingr+="feta cheese"
+                    new.append(newingr)
+                elif "oil" in ingr.lower():
+                    ingr = ingr.split()
+                    for word in ingr:
+                        if word in units:
+                            newingr+=word
+                            newingr+=" "
+                            break
+                        else:
+                            newingr+=word
+                            newingr+=" "
+                    newingr+="olive oil"
+                    new.append(newingr)
+                elif "beans" in ingr.lower():
+                    ingr = ingr.split()
+                    for word in ingr:
+                        if word in units:
+                            newingr+=word
+                            newingr+=" "
+                            break
+                        else:
+                            newingr+=word
+                            newingr+=" "
+                    newingr+="chickpeas"
+                    new.append(newingr)
+                elif "bell pepper" in ingr.lower():
+                    ingr = ingr.split()
+                    for word in ingr:
+                        if word in units:
+                            newingr+=word
+                            newingr+=" "
+                            break
+                        else:
+                            newingr+=word
+                            newingr+=" "
+                    newingr+="green olives"
+                    new.append(newingr)
+                elif flag==False:
+                    newingr = ingr
+                    new.append(newingr)
+            new.append("drizzle of tzaziki sauce")
+            ingredients = new
+            print("These are the new, greek ingredients")
+            for ing in ingredients:
+                print(ing)
+        elif "gluten" in inpt.lower():
+            units = ['cup', 'cups', 'ml', 'mls', 'liters', 'L', 'ounces', 'oz', 'lb', 'lbs', 'stick', 'sticks', 'pounds', 'pound', 'teaspoon', 'teaspoons', 'tsp', 'tablespoon', 'tablespoons', 'tbsp']
+            new = []
             flag = False
-            if theingredient in replacementdict:
-                    print("Substitute", theingredient, "with:")
-                    print(replacementdict[theingredient])
+            for ingr in ingredients:
+                newingr = ""
+                if "flour" in ingr.lower():
                     flag = True
+                    ingr = ingr.split()
+                    for word in ingr:
+                        if word in units:
+                            newingr+=word
+                            newingr+=" "
+                            break
+                        else:
+                            newingr+=word
+                            newingr+=" "
+                    newingr+="almond flour"
+                    new.append(newingr)
+                elif "bread" in ingr.lower():
+                    flag = True
+                    ingr = ingr.split()
+                    for word in ingr:
+                        if word in units:
+                            newingr+=word
+                            newingr+=" "
+                            break
+                        else:
+                            newingr+=word
+                            newingr+=" "
+                    newingr+="gluten-free bread"
+                    new.append(newingr)
+                elif "pasta" in ingr.lower():
+                    flag = True
+                    ingr = ingr.split()
+                    for word in ingr:
+                        if word in units:
+                            newingr+=word
+                            newingr+=" "
+                            break
+                        else:
+                            newingr+=word
+                            newingr+=" "
+                    newingr+="gluten-free pasta or rice"
+                    new.append(newingr)
+                elif "ladyfingers" in ingr.lower():
+                    flag = True
+                    newingr+="gluten-free ladyfingers or gluten-free cookies"
+                    new.append(newingr)
+                else:
+                    new.append(ingr)
             if flag==False:
-                print("No replacements were found")
+                print("This recipe is likely gluten-free already.")
+            else:
+                ingredients = new
+                print("These are the new gluten-free ingredients:")
+                for ingredient in ingredients:
+                    print(ingredient)
+
+        elif "ingredient" in inpt.lower():
+            print_ingredients()
+
+        elif "directions" in inpt.lower():
+            print("These are the directions. Type 'next' or 'back' or simply type a number to navigate the steps!")
+            print("step 1:", steps[0])
+
+        elif "repeat" in inpt.lower():
+            print("step", str(stepI) + ":", steps[stepI])
+
+        elif "next" in inpt.lower():
+            if stepI < len(steps) - 2:
+                stepI += 1
+                curr_ingr = ''
+                print("step", str(stepI + 1) + ":", steps[stepI])
+            else:
+                print("There are no more steps!")
+
+        elif "back" in inpt.lower() or "prev" in inpt.lower():
+            if stepI >= 1:
+                stepI -= 1
+                curr_ingr = ''
+                print("step", str(stepI + 1) + ":", steps[stepI])
+            else:
+                print("There are no steps before this!")
+
+        elif inpt.lower().__contains__("double"):
+            scaling_questions(2)
+
+        elif inpt.lower().__contains__("half") or inpt.lower().__contains__("halv"):
+            scaling_questions(.5)
+        
+        elif inpt.lower().__contains__("triple"):
+            scaling_questions(3)
+        
+        elif inpt.lower().__contains__("method"):
+            method_transformations()
+
+        
+        elif "vegetarian" in inpt.lower() and "non" not in inpt.lower():
+            healthyflag = False
+            the_meat = contains_meat()
+            if len(the_meat)==0:
+                print("This recipe is already vegetarian")
+            else:
+                for ingr in ingredients:
+                    if ingr.__contains__("burger") or ingr.__contains__("patty"):
+                        print("You may replace the meat patty with a bean burger, soy burger, impossible burger, mushroom burger, or veggie burger")
+                        break
+                    elif ingr.__contains__("flavored"):
+                        print("You may choose to omit the", ingr, "entirely, or you may choose to use a vegetarian substitute.")
+                        for item in the_meat:
+                            if ingr.__contains__(item):
+                                oldingr = ingr
+                                ingr = ingr.replace(item, "regular")
+                                print("In this case, you would replace the", oldingr, "with", ingr)
+                                the_meat.remove(item)
+                for item in the_meat:
+                    if item != "burger":
+                        print("You can choose to omit the", item, "entirely, or you may replace it with one of the following vegetarian substitutes:")
+                        print("tofu, lentils, beans, chickpeas, or eggplant")
+                vegflag = True
+                print("What would you like to substitute for the meat?")
+        elif "vegetarian" in inpt.lower() and "non" in inpt.lower():
+            healthyflag = False
+            the_meat = contains_meat()
+            if len(the_meat)>0:
+                print("This recipe is already contains meat")
+            else:
+                flag = False
+                for ingr in ingredients:
+                    if ingr.__contains__("burger") or ingr.__contains__("patty"):
+                        print("You may replace the vegetarian patty with a beef patty or turkey patty")
+                        flag = True
+                        break
+                    if ingr.__contains__("tofu"):
+                        flag = True
+                        print("You may replace the tofu with one of the following meat options:")
+                    if ingr.__contains__("beans"):
+                        flag = True
+                        print("You may replace the beans with one of the following meat options:")
+                    if ingr.__contains__("chickpeas"):
+                        flag = True
+                        print("You may replace the chickpeas with one of the following meat options:")
+                    if ingr.__contains__("eggplant"):
+                        flag = True
+                        print("You may replace the eggplant with one of the following meat options:")
+                    if ingr.__contains__("lentils"):
+                        flag = True
+                        print("You may replace the lentils with one of the following meat options:")
+                if flag==False:
+                    print("You may add one of the following meat options:")
+                    print("chicken, ground beef, steak, turkey, duck, pork, or fish")
+                else:
+                    print("chicken, ground beef, steak, turkey, duck, pork, or fish")
+                    print("What meat option you like to substitute in?")
+        elif "substitute" in inpt.lower() or "replace" in inpt.lower() or "substitution" in inpt.lower() or "replacement" in inpt.lower():
+            newinpt = inpt.lower()
+            newinpt = newinpt.split()
+            theingredient = ""
+            flag = False
+            if newinpt.__contains__("cheese"):
+                print(replacementdict["cheese"])
+            elif newinpt.__contains__("oil"):
+                print(replacementdict["oil"])
+            elif newinpt.__contains__("turkey") or newinpt.__contains__("chicken") or newinpt.__contains__("beef") or newinpt.__contains__("pork"):
+                print(replacementdict["vegetarian"])
+            else:
+                for word in newinpt:
+                    if flag==True:
+                        theingredient+=word
+                        theingredient+=" "
+                    if newinpt.__contains__("for"):
+                        if word=="for":
+                            flag = True
+                    else:
+                        if word == "replace" or word=="substitute":
+                            flag = True
+                
+                theingredient = theingredient[:-1]
+                flag = False
+                if theingredient in replacementdict:
+                        print("Substitute", theingredient, "with:")
+                        print(replacementdict[theingredient])
+                        flag = True
+                if flag==False:
+                    print("No replacements were found")
+    elif healthyflag==True:
+            healthyflag = False
+            inpt = inpt.replace(",", "")
+            counter=0
+            separate = inpt.lower().split()
+            thestr = ""
+            goodfoods = []
+            while counter<len(separate)-2:
+                thestr = ""
+                thestr+=separate[counter]
+                thestr+=" "
+                thestr+=separate[counter+1]
+                if thestr in healthyoptions:
+                    goodfoods.append(thestr)
+                    counter+=2  
+                elif separate[counter] in healthyoptions:
+                    goodfoods.append(separate[counter])
+                    counter+=1
+            if separate[-1] in healthyoptions:
+                goodfoods.append(separate[-1])
+            badfoods = healthy()
+            newingredients = []
+            newsteps = []
+            counter=0
+            units = ['cup', 'cups', 'ml', 'mls', 'liters', 'L', 'ounces', 'oz', 'lb', 'lbs', 'stick', 'pounds', 'pound', 'teaspoon', 'teaspoons', 'tsp', 'tablespoon', 'tablespoons', 'tbsp']
+            for ingr in ingredients:
+                foodcounter=0
+                newingr = ""
+                for food in badfoods:
+                    if ingr.__contains__(food):
+                        newingr = ""
+                        ingr = ingr.split()
+                        for word in ingr:
+                            if word in units:
+                                newingr+=word
+                                newingr+=" "
+                                newingr+=goodfoods[foodcounter]
+                                #print("NEW INGR")
+                                print(newingr)
+                                break
+                            else:
+                                newingr+=word
+                                newingr+=" "
+                    else:
+                        foodcounter+=1
+                if newingr=="":
+                    ingredients[counter] = ingr
+                else:
+                    ingredients[counter] = newingr
+                counter+=1
+            for ing in ingredients:
+                print(ing)
+            counter=0
+            for dir in steps:
+                foodcounter=0
+                for food in badfoods:
+                    if dir.__contains__(food):
+                        dir = dir.replace(food, goodfoods[foodcounter])
+                        foodcounter+=1
+                    else:
+                        foodcounter+=1
+                steps[counter] = dir
+                counter+=1
+            print("These are the new steps:")
+            for dir in steps:
+                print(dir)
+    elif unhealthyflag==True:
+        unhealthyflag = False
+        goodfoods = unhealthy()
+        inpt = inpt.lower().replace(",", "")
+        additions = []
+        if inpt.lower().__contains__("sugar"):
+            additions.append("sugar")
+        if inpt.lower().__contains__("butter"):
+            additions.append("butter")
+        if inpt.lower().__contains__("oil"):
+            additions.append("oil")
+        inpt = inpt.replace("sugar", "")
+        inpt = inpt.replace("butter", "")
+        inpt = inpt.replace("oil", "")
+        inpt = inpt.split()
+        counter=0
+        foodcounter=0
+        for ingr in ingredients:
+            flag = False
+            for word in goodfoods:
+                if ingr.__contains__(word):
+                    flag = True
+                    replace = healthy_to_un[word]
+                    rep = ""
+                    for w in inpt:
+                        if w in replace:
+                            rep = w
+                            break
+                    ingr = ingr.replace(word, rep)
+                    foodcounter+=1
+                    ingredients[counter]=ingr
+                    counter+=1
+                    break
+            if flag==False:
+                ingredients[counter] = ingr
+                counter+=1
+        foodcounter=0
+        counter=0
+        for dir in steps:
+            flag = False
+            for word in goodfoods:
+                if dir.__contains__(word):
+                    flag = True
+                    replace = healthy_to_un[word]
+                    for w in replace:
+                        if w in inpt:
+                            dir = dir.replace(word, rep)
+                    steps[counter]=dir
+                    counter+=1
+                    break
+            if flag==False:
+                steps[counter] = dir
+                counter+=1
+        counter=0
+        newingredients = []
+        for ingr in ingredients:
+            newingr = ingr
+            for extra in additions:
+                if ingr.__contains__(extra):
+                    newingr = "2x "
+                    newingr+=ingr
+                    newingr+=" "
+                    ingredients[counter] = newingr
+            newingredients.append(newingr)   
+        ingredients = newingredients    
+        print("These are the new, unhealthy ingredients:")
+        for ing in ingredients:
+            print(ing)
+        print("These are the new steps:")
+        for dir in steps:
+            print(dir)
