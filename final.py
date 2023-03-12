@@ -531,6 +531,7 @@ while counter < len(steps) - 1:
     step = step.strip()
     steps[counter] = step
     counter+=1 
+steps = steps[0:len(steps)-1]
 
 method_dict = direction_methods(steps)
 
