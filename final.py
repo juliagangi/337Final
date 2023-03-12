@@ -384,11 +384,10 @@ def multiply(num,factor):
             return str(sum)[0:len(str(sum))-2]
         return str(sum)
     
-#action_dict = {1:['preheat'],2:['place'],3:['rub','bake'],4:['slice'],5:['place','add'],6:['remove'],7:['lower'],8:['cut'],9:['scrape'],10:[],11:['lay'],12:['smash'],13:['add','mix'],14:['add'],15:['fill'],16:['fill'],17:['top','pop'],18:[]}
 def method_transformations():
-    method_arr = [['mix','whisk','beat'],['smash','mash','cut'],['rub','pat','marinate'],['bake','roast','air fry','saute','steam','sear','sauté','saute','fry','grill','barbecue','broil','toast'],['chop','slice','dice','julienne','cut','cube','mince','cleave'],['boil','steam']]
+    method_arr = [['mix','whisk','beat'],['rub','pat','marinate'],['bake','roast','air fry','saute','steam','sear','sauté','saute','fry','grill','barbecue','broil','toast'],['chop','slice','dice','julienne','cut','cube','mince','cleave'],['boil','steam'],['smash','mash','cut']]
     counter = 1
-    # make dict where keys are steps, values are dict mapping old verb to new verbs to reprint steps 
+    new_steps = []
     for step in steps:
         stepcounter = "Step "
         stepcounter+=str(counter)
@@ -408,6 +407,7 @@ def method_transformations():
         if ctr == 0:
             print("There are no replaceable actions in this step.")
             counter+=1
+            new_steps.append(step)
             input("Press Enter to move to the next step\n")
             continue            
         print(stri[0:len(stri)-2])
@@ -424,15 +424,27 @@ def method_transformations():
                         print(stri[0:len(stri)-2])
                         new = input("Which option do you prefer? ")
                         index = in_step.index(action)
+                        step = step.lower().split()
+                        oldi = step.index(action)
+                        step[oldi] = new
+                        step = ' '.join(step)
                         method_dict[counter][index] = new
                         found = True
                         break
                 if not found:
                     print("I can't find any replacements for that action.")
             continue
+        new_steps.append(step)    
         counter+=1
         input("Press Enter to move to the next step\n")
-    #print("Here are the new steps:")
+    print("Here are the new steps:")
+    counter = 1
+    for step in new_steps:
+        stepcounter = "Step "
+        stepcounter+=str(counter)
+        stepcounter+=":"
+        print(stepcounter, step)
+        counter+=1
     return        
 
 def cooking_action(question,curdir):
