@@ -344,9 +344,11 @@ def scaling_questions(factor):
             t3 = ''
         curr_response = quantity + t1 + unit + t2 + ingredient + t3 + prep
         response.append(curr_response)
+    new_ingredients = []
     print("These are the new ingredients: ")
     for a_response in response:
         print(a_response)
+        new_ingredients.append(a_response)
     print("These are the new steps: ")
     i = 0
     for step in steps:
@@ -367,6 +369,7 @@ def scaling_questions(factor):
                     continue
         i = i + 1
         print('step ' + str(i) + ': ' + ' '.join(newstep))
+    return new_ingredients
 
 
 def multiply(num,factor):
@@ -503,7 +506,7 @@ def method_transformations():
         stepcounter+=":"
         print(stepcounter, step)
         counter+=1
-    return        
+    return new_steps      
 
 def cooking_action(question,curdir):
     tagged = nlp(question)
@@ -619,6 +622,7 @@ while(True):
             if int(v[0]) < len(steps) and "step" in inpt.lower():
                 print("step " + v[0] + ": " + steps[int(v[0]) - 1])
                 stepI = int(v[0]) - 1
+
     if healthyflag == False and unhealthyflag==False:
         if "chicken" in inpt.lower() or "ground beef" in inpt.lower() or "pork" in inpt.lower() or "steak" in inpt.lower() or "turkey" in inpt.lower() or "duck" in inpt.lower() or "fish" in inpt.lower():
             vegflag = False
@@ -934,6 +938,19 @@ while(True):
                     stepcounter+=":"
                     print(stepcounter, dir)
                     counter+=1
+        
+        elif inpt.lower().__contains__("double"):
+            ingredients = scaling_questions(2)
+
+        elif inpt.lower().__contains__("half") or inpt.lower().__contains__("halv"):
+            ingredients = scaling_questions(.5)
+        
+        elif inpt.lower().__contains__("triple"):
+            ingredients = scaling_questions(3)
+        
+        elif inpt.lower().__contains__("method"):
+            steps = method_transformations()
+        
         elif "ingredient" in inpt.lower():
             print_ingredients()
 
@@ -960,19 +977,6 @@ while(True):
             else:
                 print("There are no steps before this!")
 
-        elif inpt.lower().__contains__("double"):
-            scaling_questions(2)
-
-        elif inpt.lower().__contains__("half") or inpt.lower().__contains__("halv"):
-            scaling_questions(.5)
-        
-        elif inpt.lower().__contains__("triple"):
-            scaling_questions(3)
-        
-        elif inpt.lower().__contains__("method"):
-            method_transformations()
-
-        
         elif "vegetarian" in inpt.lower() and "non" not in inpt.lower():
             healthyflag = False
             the_meat = contains_meat()
