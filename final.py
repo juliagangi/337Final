@@ -854,6 +854,23 @@ while(True):
                     new.append(newingr)
                 else:
                     new.append(ingr)
+            newsteps = []
+            for dir in steps:
+                newingr = ""
+                if "flour" in dir.lower():
+                    dir = dir.replace("flour", "almond flour")
+                    #newsteps.append(dir)
+                if "bread" in dir.lower():
+                    dir = dir.replace("bread", "gluten-free bread")
+                    #newsteps.append(dir)
+                if "pasta" in dir.lower():
+                    dir = dir.replace("pasta", "gluten-free pasta or rice")
+                if "ladyfingers" in dir.lower():
+                    dir = dir.replace("ladyfingers", "gluten-free ladyfingers or gluten-free cookies")
+                else:
+                    dir = dir
+                newsteps.append(dir)
+                steps = newsteps
             if flag==False:
                 print("This recipe is likely gluten-free already.")
             else:
@@ -861,7 +878,9 @@ while(True):
                 print("These are the new gluten-free ingredients:")
                 for ingredient in ingredients:
                     print(ingredient)
-
+                print("These are the new steps:")
+                for dir in steps:
+                    print(dir)
         elif "ingredient" in inpt.lower():
             print_ingredients()
 
