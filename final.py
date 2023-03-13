@@ -344,10 +344,10 @@ def scaling_questions(factor):
             t3 = ''
         curr_response = quantity + t1 + unit + t2 + ingredient + t3 + prep
         response.append(curr_response)
-    print("Here is the updated ingredients list: ")
+    print("These are the new ingredients: ")
     for a_response in response:
         print(a_response)
-    print("Here are the updated directions: ")
+    print("These are the new steps: ")
     i = 0
     for step in steps:
         step = step.split()
@@ -495,7 +495,7 @@ def method_transformations():
         new_steps.append(step)    
         counter+=1
         input("Press Enter to move to the next step\n")
-    print("Here are the new steps:")
+    print("These are the new steps:")
     counter = 1
     for step in new_steps:
         stepcounter = "Step "
@@ -575,7 +575,8 @@ def cooking_action(question,curdir):
     return
 
 print("My name is KitchenBot and I am here to help you modify the recipe you would like to make.")
-print("I am equipped to handle scaling, substitutions, cuisine transformations, method transformations, and dietary accomodations.")
+print("I am equipped to handle scaling, substitutions, method transformations, and ingredient transformations.")
+print("My ingredient transformations include adapting the recipe to the greek style, to healthy, to unhealthy, to vegetarian, to non-vegetarian, and to gluten-free.")
 url = input("Please enter the URL of a recipe: ")
 
 scraper = scrape_me(url)
@@ -594,7 +595,7 @@ steps = steps[0:len(steps)-1]
 method_dict = direction_methods(steps)
 
 print("I see that you would like to make " + title[0:len(title)] + '.')
-print("What would you like to change about the recipe?")
+print("What would you like to change about the recipe? For example, say "+"'"+"make it vegetarian"+"'")
 
 ansArr = ['Nothing','Step','Ingredient']
 stepI = 0
@@ -650,8 +651,13 @@ while(True):
             for ing in ingredients:
                 print(ing)
             print("These are the new steps:")
+            counter = 1
             for dir in steps:
-                print(dir)
+                stepcounter = "Step "
+                stepcounter+=str(counter)
+                stepcounter+=":"
+                print(stepcounter, dir)
+                counter+=1
         elif "tofu" in inpt.lower() or "lentils" in inpt.lower() or "chickpeas" in inpt.lower() or "beans" in inpt.lower() or "eggplant" in inpt.lower():
             vegflag = False
             print("Keep in mind that replacing meat with a vegetarian substitute may change the duration you want to cook for. Not all directions will be applicable.")
@@ -689,8 +695,13 @@ while(True):
             for ing in ingredients:
                 print(ing)
             print("These are the new steps:")
+            counter = 1
             for dir in steps:
-                print(dir)
+                stepcounter = "Step "
+                stepcounter+=str(counter)
+                stepcounter+=":"
+                print(stepcounter, dir)
+                counter+=1
         elif "healthy" in inpt.lower() and "un" not in inpt.lower():
             healthyflag = True
             bad_foods = healthy()
@@ -724,7 +735,7 @@ while(True):
             print("Input the ingredients you would like to add to this recipe to make it less healthy.")
         elif "greek" in inpt.lower():
             units = ['cup', 'cups', 'ml', 'mls', 'liters', 'L', 'ounces', 'oz', 'lb', 'lbs', 'stick', 'sticks', 'pounds', 'pound', 'teaspoon', 'teaspoons', 'tsp', 'tablespoon', 'tablespoons', 'tbsp']
-            notgreekherbs = ["dill", "cilantro", "jalapeno", "basil", "cumin"]
+            notgreekherbs = ["dill", "cilantro", "jalapeno", "jalapeño", "basil", "cumin"]
             counter=0
             new = []
             for ingr in ingredients:
@@ -803,6 +814,43 @@ while(True):
             print("These are the new, greek ingredients")
             for ing in ingredients:
                 print(ing)
+            c = 0
+            newsteps = []
+            for dir in steps:
+                for herb in notgreekherbs:
+                    if dir.__contains__(herb):
+                        if c == 0:
+                            dir = dir.replace(herb, "thyme")
+                            c+=1
+                            continue
+                        elif c == 1:
+                            dir = dir.replace(herb, "mint")
+                            c+=1
+                            continue
+                        elif c == 2:
+                            dir = dir.replace(herb, "oregano")
+                            c+=1
+                            continue
+                if dir.__contains__("bell pepper"):
+                    dir = dir.replace("bell pepper", "green olives")
+                if dir.__contains__("pepper") and "bell" not in dir:
+                    dir = dir.replace("pepper", "green olives")
+                if dir.__contains__("beans"):
+                    dir = dir.replace("beans", "chickpeas")   
+                if dir.__contains__("oil"):
+                    dir = dir.replace("oil", "olive oil")
+                if dir.__contains__("cheese"):
+                    dir = dir.replace("cheese", "feta cheese")
+                newsteps.append(dir)
+            steps = newsteps
+            print("These are the new steps:")
+            counter = 1
+            for dir in steps:
+                stepcounter = "Step "
+                stepcounter+=str(counter)
+                stepcounter+=":"
+                print(stepcounter, dir)
+                counter+=1
         elif "gluten" in inpt.lower():
             units = ['cup', 'cups', 'ml', 'mls', 'liters', 'L', 'ounces', 'oz', 'lb', 'lbs', 'stick', 'sticks', 'pounds', 'pound', 'teaspoon', 'teaspoons', 'tsp', 'tablespoon', 'tablespoons', 'tbsp']
             new = []
@@ -879,8 +927,13 @@ while(True):
                 for ingredient in ingredients:
                     print(ingredient)
                 print("These are the new steps:")
+                counter = 1
                 for dir in steps:
-                    print(dir)
+                    stepcounter = "Step "
+                    stepcounter+=str(counter)
+                    stepcounter+=":"
+                    print(stepcounter, dir)
+                    counter+=1
         elif "ingredient" in inpt.lower():
             print_ingredients()
 
@@ -1045,7 +1098,6 @@ while(True):
                                 newingr+=word
                                 newingr+=" "
                                 newingr+=goodfoods[foodcounter]
-                                #print("NEW INGR")
                                 break
                             else:
                                 newingr+=word
@@ -1071,8 +1123,13 @@ while(True):
                 steps[counter] = dir
                 counter+=1
             print("These are the new steps:")
+            counter = 1
             for dir in steps:
-                print(dir)
+                stepcounter = "Step "
+                stepcounter+=str(counter)
+                stepcounter+=":"
+                print(stepcounter, dir)
+                counter+=1
     elif unhealthyflag==True:
         unhealthyflag = False
         goodfoods = unhealthy()
@@ -1142,5 +1199,10 @@ while(True):
         for ing in ingredients:
             print(ing)
         print("These are the new steps:")
+        counter = 1
         for dir in steps:
-            print(dir)
+            stepcounter = "Step "
+            stepcounter+=str(counter)
+            stepcounter+=":"
+            print(stepcounter, dir)
+            counter+=1
