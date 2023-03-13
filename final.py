@@ -1027,7 +1027,6 @@ while(True):
                                 newingr+=" "
                                 newingr+=goodfoods[foodcounter]
                                 #print("NEW INGR")
-                                print(newingr)
                                 break
                             else:
                                 newingr+=word
